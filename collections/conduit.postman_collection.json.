@@ -1,0 +1,3986 @@
+{
+  "info": {
+    "_postman_id": "b33658cd-ed6c-4777-9976-ca508ace64d8",
+    "name": "Postman Practice [QA_Charlie_jan26]",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52828079",
+    "_collection_link": "https://go.postman.co/collection/52828079-b33658cd-ed6c-4777-9976-ca508ace64d8?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Successful sign in",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));\r",
+                  "\r",
+                  "registerUser(pm.collectionVariables.get('baseUrl'), function() {\r",
+                  "    console.log(\"User registered successfully\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Token is returned\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.user.token).to.not.be.undefined;\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"user\": {\r\n    \"email\": \"{{testEmail}}\",\r\n    \"password\": \"{{testPassword}}\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign in with non-existing credential",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {\r",
+                  "    pm.response.to.have.status(422);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message is 'is invalid'\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.errors['email or password']).to.equal(\"is invalid\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"user\": {\r\n    \"email\": \"not_existing_user_mate1_{{$randomInt}}@test.com\",\r\n    \"password\": \"{{userPassword}}\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign in with empty email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {\r",
+                  "    pm.response.to.have.status(422);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message is 'can't be blank'\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.errors.email).to.equal(\"can't be blank\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));\r",
+                  "\r",
+                  "registerUser(pm.collectionVariables.get('baseUrl'), function() {\r",
+                  "    console.log(\"User registered for Empty Email test\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"user\": {\r\n    \"email\": \"\",\r\n    \"password\": \"{{testPassword}}\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign in with empty password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {\r",
+                  "    pm.response.to.have.status(422);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message is 'can't be blank'\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.errors.password).to.equal(\"can't be blank\");\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));\r",
+                  "\r",
+                  "registerUser(pm.collectionVariables.get('baseUrl'), function() {\r",
+                  "    console.log(\"User registered for Empty Password test: \" + pm.collectionVariables.get('testEmail'));\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"user\": {\r\n    \"email\": \"{{testEmail}}\",\r\n    \"password\": \"\"\r\n  }\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Successful sign up",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"User has token\", function () {",
+                  "    const { user } = pm.response.json();",
+                  "    pm.expect(user).to.have.property(\"token\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{$randomFirstName}}{{$randomLastName}}\",\n        \"email\": \"{{$randomEmail}}\",\n        \"password\": \"{{testPassword}}\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with taken username",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const registerUser = eval(\"(\" + pm.globals.get('registerUser') + \")\");",
+                  "registerUser(pm.collectionVariables.get('baseUrl'));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.username[0]).to.eql(\"This username is taken.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{testUsername}}\",\n        \"email\": \"{{$randomEmail}}\",\n        \"password\": \"{{testPassword}}\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with taken email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.email[0]).to.eql(\"This email is taken.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const registerUser = eval(\"(\" + pm.globals.get('registerUser') + \")\");",
+                  "registerUser(pm.collectionVariables.get('baseUrl'));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{$randomFirstName}}{{$randomLastName}}\",\n        \"email\": \"{{testEmail}}\",\n        \"password\": \"{{testPassword}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with username starting from number",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message appears\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.errors.username).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.username).to.include(\"Username must start with a letter, have no spaces, and be at least 3 characters.\");",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.username).to.include(\"Username must start with a letter, have no spaces, and be 2 - 40 characters.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"1{{$randomFirstName}}{{$randomLastName}}\",\n        \"email\": \"{{$randomEmail}}\",\n        \"password\": \"{{testPassword}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with username with 41 symbols",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let username = '';",
+                  "while (username.length < 41) {",
+                  "  username += pm.variables.replaceIn('{{$randomFirstName}}');",
+                  "}",
+                  "username = username.slice(0, 41);",
+                  "",
+                  "pm.variables.set(\"username41symbols\", username);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message appears\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.errors.username).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.username).to.include(\"Username must start with a letter, have no spaces, and be 2 - 40 characters.\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{username41symbols}}\",\n        \"email\": \"{{$randomEmail}}\",\n        \"password\": \"{{testPassword}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with username with spaces",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const firstPartName = pm.collectionVariables.replaceIn('{{$randomFirstName}}');",
+                  "const secondPartName = pm.collectionVariables.replaceIn('{{$randomFirstName}}');",
+                  "const usernameWithSpace = firstPartName + ' ' + secondPartName;",
+                  "",
+                  "pm.variables.set(\"usernameWithSpace\", usernameWithSpace);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message appears\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.errors.username).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.username).to.include(\"Username must start with a letter, have no spaces, and be 2 - 40 characters.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{usernameWithSpace}}\",\n        \"email\": \"{{$randomEmail}}\",\n        \"password\": \"{{testPassword}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with empty username",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message appears\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.errors.username).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.username).to.include(\"Username must start with a letter, have no spaces, and be 2 - 40 characters.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"\",\n        \"email\": \"{{$randomEmail}}\",\n        \"password\": \"{{testPassword}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with empty email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message appears\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.errors.email).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.email[0]).to.eql(\"This email does not seem valid.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{$randomFirstName}}{{$randomLastName}}\",\n        \"email\": \"\",\n        \"password\": \"{{testPassword}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with email without @",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const namePartEmail = pm.collectionVariables.replaceIn('{{$randomFirstName}}{{$randomLastName}}');",
+                  "const domPartEmail = \"gmail.com\";",
+                  "const emailWihtoutA = namePartEmail + domPartEmail;",
+                  "",
+                  "pm.collectionVariables.set(\"emailWihtoutA\", emailWihtoutA);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message appears\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.errors.email).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.email[0]).to.eql(\"This email does not seem valid.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{$randomFirstName}}{{$randomLastName}}\",\n        \"email\": \"{{emailWihtoutA}}\",\n        \"password\": \"{{testPassword}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with email without .",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const namePartEmail = pm.collectionVariables.replaceIn('{{$randomFirstName}}{{$randomLastName}}');",
+                  "const domPartEmail = \"@gmailcom\";",
+                  "const emailWihtoutDot = namePartEmail + domPartEmail;",
+                  "",
+                  "pm.collectionVariables.set(\"emailWihtoutDot\", emailWihtoutDot);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message appears\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.errors.email).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.email[0]).to.eql(\"This email does not seem valid.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{$randomFirstName}}{{$randomLastName}}\",\n        \"email\": \"{{emailWihtoutDot}}\",\n        \"password\": \"{{testPassword}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with email without name part",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message appears\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.errors.email).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.email[0]).to.eql(\"This email does not seem valid.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{$randomFirstName}}{{$randomLastName}}\",\n        \"email\": \"@gmail.com\",\n        \"password\": \"{{testPassword}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with email with more than 254 symbols",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "let emailNamePart = '';",
+                  "while (emailNamePart.length < 255) {",
+                  "  emailNamePart += pm.variables.replaceIn('{{$randomFirstName}}');",
+                  "}",
+                  "emailNamePart = emailNamePart.slice(0, 255);",
+                  "emailDomPart = \"@gmail.com\";",
+                  "",
+                  "const email254 = emailNamePart + emailDomPart;",
+                  "",
+                  "pm.collectionVariables.set(\"email254\", email254);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message appears\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.errors.email).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.email[0]).to.eql(\"This email does not seem valid.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{$randomFirstName}}{{$randomLastName}}\",\n        \"email\": \"{{email254}}\",\n        \"password\": \"{{testPassword}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign up with empty password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message appears\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.errors.password).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Error message correct\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.errors.password).to.eql(\"can't be blank\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json, text/plain, */*"
+              },
+              {
+                "key": "accept-language",
+                "value": "ru,uk;q=0.9,en-US;q=0.8,en;q=0.7"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "origin",
+                "value": "https://conduit.mate.academy"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "referer",
+                "value": "https://conduit.mate.academy/user/register"
+              },
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"147\", \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"147\""
+              },
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              },
+              {
+                "key": "sec-ch-ua-platform",
+                "value": "\"macOS\""
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+              },
+              {
+                "key": "Cookie",
+                "value": "sbjs_migrations=1418474375998%3D1; _mate-gbraid=0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ; _mate-gclid=CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; sbjs_first_add=fd%3D2026-01-22%2011%3A40%3A13%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fcourses%2Fparttime%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%26utm_content%3DKW_Mate-academy_-%26utm_term%3Dkwd-490518305899_e_mate%2520academy_g%26utm_ac_id%3D535-801-8615%26utm_id%3D21180635440%26utm_ad_group_id%3D163805226231%26utm_ad_id%3D746661846452%26utm_term_id%3Dkwd-490518305899%26gad_source%3D1%26gad_campaignid%3D21180635440%26gbraid%3D0AAAAAofUWTIDIpGT9p6nIbH67K-XRHJaZ%26gclid%3DCjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; sbjs_first=typ%3Dutm%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dcpc%7C%7C%7Ccmp%3DGEO-UA_BRAND_MXD_SEA_-_MN-E_Submit-Lead-Forms_-_GOA%7C%7C%7Ccnt%3DKW_Mate-academy_-%7C%7C%7Ctrm%3Dkwd-490518305899_e_mate%2520academy_g%7C%7C%7Cac_id%3D535-801-8615%7C%7C%7Ccmp_id%3D21180635440%7C%7C%7Cadg_id%3D163805226231%7C%7C%7Cad_id%3D746661846452%7C%7C%7Ctrm_id%3Dkwd-490518305899; _gcl_gs=2.1.k1$i1769074812$u224205191; cookieyes-consent=consentid:ck5NR1R4V0tnYkg1dXdTSFdVbHZBeVA1TXA3TXozODk,consent:yes,action:no,necessary:yes,functional:yes,analytics:yes,performance:yes,advertisement:yes; _mate-user-device-id=Zon9gSE10klew3Iv5vhHFv; _fbp=fb.1.1769074813528.566564157906753333; next-i18next=uk; _mate-user-analytics-id=38e0d2a7c37b909c284ec94ac4ecea6c; _gcl_aw=GCL.1769074846.CjwKCAiAssfLBhBDEiwAcLpwfpINzKfHhUDPQj8M0fuFaMSqEKRAvMO5cvwAf0-G5MsKJfKJJuHFtBoCiXsQAvD_BwE; __stripe_mid=7235ddac-4505-44d4-8aa0-09a37057ac2961d6f6; _gid=GA1.2.1338805512.1769767200; nisess=7c8b4136495bb535900df5c8eecbc528; niuid=7c0168a76fd2f860ad73b4cc7d8236f1; sbjs_current=typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cac_id%3D%28none%29%7C%7C%7Ccmp_id%3D%28none%29%7C%7C%7Cadg_id%3D%28none%29%7C%7C%7Cad_id%3D%28none%29%7C%7C%7Ctrm_id%3D%28none%29; sbjs_current_add=fd%3D2026-03-21%2015%3A11%3A08%7C%7C%7Cep%3Dhttps%3A%2F%2Fmate.academy%2Fchats%2F126220%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F; x-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTA2NjEzOCwidXNlclJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc0MjYyODkyLCJleHAiOjE3NzY4NTQ4OTJ9.d64IjQJ_c2aMvaV_bsGNquKiQfgC8lni0ZJ65oOcf3Y; __stripe_sid=7dd289e8-1d6a-4bdc-8e2a-6ad5f613593ab1a505; sbjs_udata=vst%3D41%7C%7C%7Cuip%3D162.120.187.177%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F147.0.0.0%20Safari%2F537.36; _mate-user-ip=31.43.60.153; _clck=1fiufk5%5E2%5Eg59%5E0%5E2213; sbjs_session=pgs%3D27%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fmate.academy%2Fstudy%2Fqa%2Fqa-working-with-infrastructure%2Fqa-practice-ua%3Fsection%3Dpractice%26testTaskSlug%3Dqa_postman_practice; _gcl_au=1.1.1648929709.1769074813.128554697.1776326494.1776326510; _ga_D00R4RV2GH=GS2.1.s1776326494$o593$g1$t1776327497$j60$l0$h0; _clsk=5nugbh%5E1776328629976%5E7%5E1%5Ee.clarity.ms%2Fcollect; _ga_M2SP5EM44C=GS2.1.s1776327883$o51$g1$t1776328864$j60$l0$h0; _ga=GA1.1.1716464404.1769074814; _gat_gtag_UA_47867706_3=1"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"{{$randomFirstName}}{{$randomLastName}}\",\n        \"email\": \"{{$randomEmail}}\",\n        \"password\": \"\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get info about user",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));",
+                  "registerUser(pm.collectionVariables.get('baseUrl'));",
+                  " "
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"User exist\", function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.user).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update info about user: image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Image updated\", function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.user.image).to.include(\"http\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));",
+                  "registerUser(pm.collectionVariables.get('baseUrl'));",
+                  " "
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"image\": \"https://www.pngkey.com/png/detail/662-6626571_avatar-placeholder.png\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update info about user: bio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Bio updated\", function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.user.bio).to.include(\"qa engineer\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));",
+                  "registerUser(pm.collectionVariables.get('baseUrl'));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"bio\": \"qa engineer\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update info about user: username",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Username updated\", function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.user.username).to.include(\"qa_\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));",
+                  "registerUser(pm.collectionVariables.get('baseUrl'));",
+                  " "
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"qa_{{$timestamp}}\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update info about user: email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Email updated\", function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.user.email).to.include(\"@blabla.com\");",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));",
+                  "registerUser(pm.collectionVariables.get('baseUrl'));",
+                  "",
+                  "const randomEmail = `${Math.random().toString(12)}@blabla.com`;",
+                  "",
+                  "pm.collectionVariables.set('updatedEmail', randomEmail)",
+                  " "
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"email\": \"{{updatedEmail}}\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update info about user: password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Assert response status code is 200', function() { pm.response.to.have.status(200); });",
+                  "pm.test('Assert response time is below 2000ms', function() { pm.expect(pm.response.responseTime).to.be.below(2000); });",
+                  "pm.test('Assert password is NOT returned in response', function() {",
+                  "    pm.expect(pm.response.json().user).to.not.have.property('password');",
+                  "});",
+                  "",
+                  "var baseUrl = pm.collectionVariables.get('baseUrl');",
+                  "var email   = pm.collectionVariables.get('testEmail');",
+                  "var newPass = pm.collectionVariables.get('testPassword');",
+                  "",
+                  "pm.sendRequest({",
+                  "    url: baseUrl + '/users/login',",
+                  "    method: 'POST',",
+                  "    header: { 'Content-Type': 'application/json' },",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({ user: { email: email, password: newPass } })",
+                  "    }",
+                  "}, function(err, res) {",
+                  "    pm.test('Assert login with new password works', function() {",
+                  "        pm.expect(err).to.be.null;",
+                  "        pm.expect(res).to.not.be.undefined;",
+                  "        pm.expect(res.code).to.equal(200);",
+                  "        pm.expect(res.json().user.token).to.be.a('string').and.not.empty;",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var baseUrl = pm.collectionVariables.get('baseUrl');",
+                  "eval('(' + pm.globals.get('registerUser') + ')')(baseUrl, function(){",
+                  "    setTimeout(function(){",
+                  "        console.log('User registered');",
+                  "    }, 500);",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"password\": \"{{testPassword}}\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update info about user without authorization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message is returned\", function () {",
+                  "    const responseText = pm.response.text();",
+                  "    pm.expect(responseText).to.include(\"Unauthorized\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user\": {\n        \"username\": \"qa_{{$timestamp}}\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Articles",
+      "item": [
+        {
+          "name": "1. Create an Article",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Assert response status code is 200', function() { pm.response.to.have.status(200); });",
+                  "pm.test('Assert response time is below 2000ms', function() { pm.expect(pm.response.responseTime).to.be.below(2000); });",
+                  "",
+                  "pm.test('Assert article is created and has slug', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.article).to.exist;",
+                  "    pm.expect(json.article.slug).to.be.a('string').and.not.empty;",
+                  "    pm.collectionVariables.set('testSlug', json.article.slug);",
+                  "});",
+                  "",
+                  "pm.test('Assert article has required fields', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.article.title).to.be.a('string');",
+                  "    pm.expect(json.article.body).to.be.a('string');",
+                  "    pm.expect(json.article.author).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var baseUrl = pm.collectionVariables.get('baseUrl');",
+                  "eval('(' + pm.globals.get('registerUser') + ')')(baseUrl, function() {});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{authToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"article\": {\n    \"title\": \"Test Article DTernovyk {{$timestamp}}\",\n    \"description\": \"Test description for postman\",\n    \"body\": \"This is the body of the test article\",\n    \"tagList\": [\"test\", \"postman\"]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Update an article",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Assert response status code is 200', function() { pm.response.to.have.status(200); });",
+                  "pm.test('Assert response time is below 2000ms', function() { pm.expect(pm.response.responseTime).to.be.below(2000); });",
+                  "pm.test('Assert article title is updated', function() {",
+                  "    pm.expect(pm.response.json().article.title).to.include('Updated');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var baseUrl = pm.collectionVariables.get('baseUrl');",
+                  "eval('(' + pm.globals.get('registerUser') + ')')(baseUrl, function(token) {",
+                  "    setTimeout(function() {",
+                  "        eval('(' + pm.globals.get('createArticle') + ')')(baseUrl, token, function() {});",
+                  "    }, 500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{authToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"article\": {\n    \"title\": \"Updated Title {{$timestamp}} by Dternovyk\",\n    \"description\": \"Updated description\",\n    \"body\": \"Updated body content\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{testSlug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{testSlug}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Delete an article",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var baseUrl = pm.collectionVariables.get('baseUrl');",
+                  "eval('(' + pm.globals.get('registerUser') + ')')(baseUrl, function(token) {",
+                  "    setTimeout(function() {",
+                  "        eval('(' + pm.globals.get('createArticle') + ')')(baseUrl, token, function() {});",
+                  "    }, 500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Assert response status code is 204', function () { pm.response.to.have.status(204); });",
+                  "pm.test('Assert response time is below 2000ms', function () { pm.expect(pm.response.responseTime).to.be.below(2000); });",
+                  "pm.test('Assert deleted article returns 404', function() {",
+                  "    var baseUrl = pm.collectionVariables.get('baseUrl');",
+                  "    var slug    = pm.collectionVariables.get('testSlug');",
+                  "",
+                  "    pm.sendRequest({",
+                  "        url: baseUrl + '/articles/' + slug,",
+                  "        method: 'GET'",
+                  "    }, function(err, res) {",
+                  "        pm.expect(res.code).to.equal(404);",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{testSlug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{testSlug}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Get an article",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Assert response status code is 200', function () { pm.response.to.have.status(200); });",
+                  "",
+                  "pm.test('Assert response time is below 2000ms', function () { pm.expect(pm.response.responseTime).to.be.below(2000); });",
+                  "",
+                  "pm.test('Assert correct article is returned', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.article).to.exist;",
+                  "    pm.expect(json.article.slug).to.equal(pm.collectionVariables.get('testSlug'));",
+                  "    pm.expect(json.article.title).to.be.a('string');",
+                  "    pm.expect(json.article.author).to.exist;",
+                  "});",
+                  "",
+                  "pm.test('Article has all required fields', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.article.title).to.be.a('string');",
+                  "    pm.expect(json.article.body).to.be.a('string');",
+                  "    pm.expect(json.article.author).to.exist;",
+                  "    pm.expect(json.article.createdAt).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var baseUrl = pm.collectionVariables.get('baseUrl');",
+                  "",
+                  "eval('(' + pm.globals.get('registerUser') + ')')(baseUrl, function(token) {",
+                  "    setTimeout(function() {",
+                  "        eval('(' + pm.globals.get('createArticle') + ')')(baseUrl, token, function() {});",
+                  "    }, 500);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{testSlug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{testSlug}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Get articles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Assert response status code is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Assert response time is below 2000ms', function () { pm.expect(pm.response.responseTime).to.be.below(2000); });",
+                  "pm.test('Assert articles is returned', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.articles).to.be.an('array');",
+                  "    pm.expect(json.articlesCount).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. Get articles from Your feed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Assert response status code is 200', function() { pm.response.to.have.status(200); });",
+                  "pm.test('Assert response time is below 2000ms', function() { pm.expect(pm.response.responseTime).to.be.below(2000); });",
+                  "pm.test('Assert feed articles array is returned', function() {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.articles).to.be.an('array');",
+                  "    pm.expect(json.articlesCount).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var baseUrl = pm.collectionVariables.get('baseUrl');",
+                  "eval('(' + pm.globals.get('registerUser') + ')')(baseUrl, function(token1) {",
+                  "    setTimeout(function() {",
+                  "        eval('(' + pm.globals.get('registerUser2') + ')')(baseUrl, function(token2, username2) {",
+                  "            setTimeout(function() {",
+                  "                eval('(' + pm.globals.get('createArticle') + ')')(baseUrl, token2, function() {",
+                  "                    setTimeout(function() {",
+                  "                        eval('(' + pm.globals.get('followUser') + ')')(baseUrl, token1, username2, function() {",
+                  "                            console.log('Feed setup complete');",
+                  "                        });",
+                  "                    }, 300);",
+                  "                });",
+                  "            }, 300);",
+                  "        });",
+                  "    }, 300);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/feed?limit=10&offset=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "feed"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7. Get articles from Global feed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Global feed returned', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.articles).to.be.an('array');",
+                  "    pm.expect(json.articlesCount).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles?limit=10&offset=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8. Get articles by tag",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Articles with tag returned', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.articles).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('All articles have the requested tag', function () {",
+                  "    const json = pm.response.json();",
+                  "    json.articles.forEach(function(article) {",
+                  "        pm.expect(article.tagList).to.include('test');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles?limit=10&tag=postman&offset=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "tag",
+                  "value": "postman"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9. Create an article without authorization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401 Unauthorized', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"article\": {\n    \"title\": \"Unauthorized Article {{$timestamp}}\",\n    \"description\": \"Should fail with 401\",\n    \"body\": \"No token provided\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10. Delete an article without authorization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401 Unauthorized', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{slug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{slug}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "11. Delete an article of another user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 403 Forbidden', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token2}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{slug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{slug}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "12. Delete non-existing article",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404 Not Found', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/this-article-does-not-exist-000000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "this-article-does-not-exist-000000"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get info about profile",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));\r",
+                  "\r",
+                  "registerUser(pm.collectionVariables.get('baseUrl'), function() {\r",
+                  "    console.log(\"Profile created for testing: \" + pm.collectionVariables.get('testUsername'));\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Username in response matches the registered user\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const expectedName = pm.collectionVariables.get('testUsername');\r",
+                  "    \r",
+                  "    pm.expect(jsonData.profile.username).to.equal(expectedName);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/profiles/:profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profiles",
+                ":profile"
+              ],
+              "variable": [
+                {
+                  "key": "profile",
+                  "value": "{{testUsername}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Follow the user",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));\r",
+                  "eval(pm.globals.get('registerUser2'));\r",
+                  "\r",
+                  "const baseUrl = pm.collectionVariables.get('baseUrl');\r",
+                  "\r",
+                  "registerUser(baseUrl, function() {\r",
+                  "    console.log(\"First user registered. Waiting for timeout...\");\r",
+                  "    \r",
+                  "    setTimeout(function() {\r",
+                  "        registerUser2(baseUrl, function() {\r",
+                  "            console.log(\"Second user registered after timeout.\");\r",
+                  "            console.log(\"Follower: \" + pm.collectionVariables.get('testUsername'));\r",
+                  "            console.log(\"Target: \" + pm.collectionVariables.get('testUsername2'));\r",
+                  "        });\r",
+                  "    }, 1000); \r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"User successfully followed\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.profile.username).to.equal(pm.collectionVariables.get('testUsername2'));\r",
+                  "    pm.expect(jsonData.profile.following).to.be.true;\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profiles/:username:/follow",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profiles",
+                ":username:",
+                "follow"
+              ],
+              "variable": [
+                {
+                  "key": "username:",
+                  "value": "{{testUsername2}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unfollow the user",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "eval(pm.globals.get('registerUser'));\r",
+                  "eval(pm.globals.get('registerUser2'));\r",
+                  "eval(pm.globals.get('followUser'));\r",
+                  "\r",
+                  "const baseUrl = pm.collectionVariables.get('baseUrl');\r",
+                  "\r",
+                  "registerUser(baseUrl, function(token) {\r",
+                  "    console.log(\"User 1 registered. Waiting...\");\r",
+                  "\r",
+                  "    setTimeout(function() {\r",
+                  "\r",
+                  "        registerUser2(baseUrl, function(token2, username2) {\r",
+                  "            console.log(\"User 2 registered. Waiting...\");\r",
+                  "\r",
+                  "            setTimeout(function() {\r",
+                  "            \r",
+                  "                followUser(baseUrl, token, username2, function() {\r",
+                  "                    console.log(\"Setup complete: followed. Now ready to Unfollow!\");\r",
+                  "                });\r",
+                  "            }, 1000); \r",
+                  "        });\r",
+                  "    }, 1000);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Following status is false\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.profile.following).to.be.false;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profiles/:username:/follow",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profiles",
+                ":username:",
+                "follow"
+              ],
+              "variable": [
+                {
+                  "key": "username:",
+                  "value": "{{testUsername2}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tags",
+      "item": [
+        {
+          "name": "Get tags",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has tags array\", function() {\r",
+                  "    const body = pm.response.json();\r",
+                  "    pm.expect(body).to.have.property(\"tags\");\r",
+                  "    pm.expect(body.tags).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Tags array is not empty\", function() {\r",
+                  "    const tags = pm.response.json().tags;\r",
+                  "    pm.expect(tags.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Each tag is a string\", function() {\r",
+                  "    const tags = pm.response.json().tags;\r",
+                  "    tags.forEach(function(tag) {\r",
+                  "        pm.expect(tag).to.be.a(\"string\");\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function() {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tags",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tags"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "item": [
+        {
+          "name": "Get comments",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.collectionVariables.get(\"baseUrl\");\r",
+                  "\r",
+                  "eval(\"(\" + pm.globals.get(\"registerUser\") + \")\")(baseUrl, function(token) {\r",
+                  "    eval(\"(\" + pm.globals.get(\"createArticle\") + \")\")(baseUrl, token, function(slug) {\r",
+                  "        eval(\"(\" + pm.globals.get(\"createComment\") + \")\")(baseUrl, token, slug, function(commentId) {\r",
+                  "            console.log(\"Setup done. Slug:\", slug, \"CommentId:\", commentId);\r",
+                  "        });\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.collectionVariables.get(\"baseUrl\");\r",
+                  "const token   = pm.collectionVariables.get(\"authToken\");\r",
+                  "const slug    = pm.collectionVariables.get(\"testSlug\");\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has comments array\", function() {\r",
+                  "    const body = pm.response.json();\r",
+                  "    pm.expect(body).to.have.property(\"comments\");\r",
+                  "    pm.expect(body.comments).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Each comment has required fields\", function() {\r",
+                  "    const comments = pm.response.json().comments;\r",
+                  "    comments.forEach(function(comment) {\r",
+                  "        pm.expect(comment).to.have.property(\"id\");\r",
+                  "        pm.expect(comment).to.have.property(\"body\");\r",
+                  "        pm.expect(comment).to.have.property(\"author\");\r",
+                  "        pm.expect(comment).to.have.property(\"createdAt\");\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function() {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "eval(\"(\" + pm.globals.get(\"deleteArticle\") + \")\")(baseUrl, token, slug);\r",
+                  "pm.collectionVariables.set(\"authToken\", \"\");\r",
+                  "pm.collectionVariables.set(\"testSlug\", \"\");\r",
+                  "pm.collectionVariables.set(\"testCommentId\", \"\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"article\": {\n    \"title\": \"Test Article DTernovyk {{$timestamp}}\",\n    \"description\": \"Test description for postman\",\n    \"body\": \"This is the body of the test article\",\n    \"tagList\": [\"test\", \"postman\"]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{testSlug}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{testSlug}}",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post a comment",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.collectionVariables.get(\"baseUrl\"); // ← collectionVariables, не variables\r",
+                  "\r",
+                  "eval(\"(\" + pm.globals.get(\"registerUser\") + \")\")(baseUrl, function(token) {\r",
+                  "    eval(\"(\" + pm.globals.get(\"createArticle\") + \")\")(baseUrl, token, function(slug) {\r",
+                  "        console.log(\"Setup done. Slug:\", slug);\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.collectionVariables.get(\"baseUrl\"); // ← прибрав \"url\" опечатку\r",
+                  "const token   = pm.collectionVariables.get(\"authToken\");\r",
+                  "const slug    = pm.collectionVariables.get(\"testSlug\");\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has comment object\", function() {\r",
+                  "    const body = pm.response.json();\r",
+                  "    pm.expect(body).to.have.property(\"comment\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Comment has required fields\", function() {\r",
+                  "    const comment = pm.response.json().comment;\r",
+                  "    pm.expect(comment).to.have.property(\"id\");\r",
+                  "    pm.expect(comment).to.have.property(\"body\");\r",
+                  "    pm.expect(comment).to.have.property(\"author\");\r",
+                  "    pm.expect(comment).to.have.property(\"createdAt\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Comment body matches sent value\", function() {\r",
+                  "    const comment = pm.response.json().comment;\r",
+                  "    pm.expect(comment.body).to.eql(\"Test comment\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function() {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "eval(\"(\" + pm.globals.get(\"deleteArticle\") + \")\")(baseUrl, token, slug);\r",
+                  "pm.collectionVariables.set(\"authToken\", \"\");\r",
+                  "pm.collectionVariables.set(\"testSlug\", \"\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{authToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"comment\": {\r\n        \"body\": \"Test comment\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{testSlug}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{testSlug}}",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete a comment",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.collectionVariables.get(\"baseUrl\");\r",
+                  "\r",
+                  "eval(\"(\" + pm.globals.get(\"registerUser\") + \")\")(baseUrl, function(token) {\r",
+                  "    eval(\"(\" + pm.globals.get(\"createArticle\") + \")\")(baseUrl, token, function(slug) {\r",
+                  "        eval(\"(\" + pm.globals.get(\"createComment\") + \")\")(baseUrl, token, slug, function(commentId) {\r",
+                  "            console.log(\"Setup done. Slug:\", slug, \"CommentId:\", commentId);\r",
+                  "        });\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl   = pm.collectionVariables.get(\"baseUrl\");\r",
+                  "const token     = pm.collectionVariables.get(\"authToken\");\r",
+                  "const slug      = pm.collectionVariables.get(\"testSlug\");\r",
+                  "const commentId = pm.collectionVariables.get(\"testCommentId\");\r",
+                  "\r",
+                  "pm.test(\"Status code is 204\", function() {\r",
+                  "    pm.response.to.have.status(204);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body is empty\", function() {\r",
+                  "    pm.expect(pm.response.text()).to.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function() {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "// Cleanup\r",
+                  "eval(\"(\" + pm.globals.get(\"deleteArticle\") + \")\")(baseUrl, token, slug);\r",
+                  "pm.collectionVariables.set(\"authToken\", \"\");\r",
+                  "pm.collectionVariables.set(\"testSlug\", \"\");\r",
+                  "pm.collectionVariables.set(\"testCommentId\", \"\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{testSlug}}/comments/{{testCommentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{testSlug}}",
+                "comments",
+                "{{testCommentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete a comment of another user",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.collectionVariables.get(\"baseUrl\");\r",
+                  "\r",
+                  "eval(\"(\" + pm.globals.get(\"registerUser\") + \")\")(baseUrl, function(token) {\r",
+                  "    eval(\"(\" + pm.globals.get(\"createArticle\") + \")\")(baseUrl, token, function(slug) {\r",
+                  "        eval(\"(\" + pm.globals.get(\"createComment\") + \")\")(baseUrl, token, slug, function(commentId) {\r",
+                  "\r",
+                  "            eval(\"(\" + pm.globals.get(\"registerUser2\") + \")\")(baseUrl, function(token2) {\r",
+                  "                console.log(\"Setup done. Slug:\", slug, \"CommentId:\", commentId, \"Token2:\", token2);\r",
+                  "            });\r",
+                  "        });\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl   = pm.collectionVariables.get(\"baseUrl\");\r",
+                  "const token     = pm.collectionVariables.get(\"authToken\");\r",
+                  "const slug      = pm.collectionVariables.get(\"testSlug\");\r",
+                  "const commentId = pm.collectionVariables.get(\"testCommentId\");\r",
+                  "\r",
+                  "pm.test(\"Status code is 204\", function() {\r",
+                  "    pm.response.to.have.status(204);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body is empty\", function() {\r",
+                  "    pm.expect(pm.response.text()).to.be.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function() {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "eval(\"(\" + pm.globals.get(\"deleteArticle\") + \")\")(baseUrl, token, slug);\r",
+                  "pm.collectionVariables.set(\"authToken\", \"\");\r",
+                  "pm.collectionVariables.set(\"testSlug\", \"\");\r",
+                  "pm.collectionVariables.set(\"testCommentId\", \"\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{testSlug}}/comments/{{testCommentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{testSlug}}",
+                "comments",
+                "{{testCommentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete a comment without authorization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.collectionVariables.get(\"baseUrl\");\r",
+                  "const token   = pm.collectionVariables.get(\"authToken\");\r",
+                  "const slug    = pm.collectionVariables.get(\"testSlug\");\r",
+                  "\r",
+                  "pm.test(\"Status code is 401\", function() {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response indicates unauthorized\", function() {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Unauthorized\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function() {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "eval(\"(\" + pm.globals.get(\"deleteArticle\") + \")\")(baseUrl, token, slug);\r",
+                  "pm.collectionVariables.set(\"authToken\", \"\");\r",
+                  "pm.collectionVariables.set(\"testSlug\", \"\");\r",
+                  "pm.collectionVariables.set(\"testCommentId\", \"\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.collectionVariables.get(\"baseUrl\");\r",
+                  "\r",
+                  "eval(\"(\" + pm.globals.get(\"registerUser\") + \")\")(baseUrl, function(token) {\r",
+                  "    eval(\"(\" + pm.globals.get(\"createArticle\") + \")\")(baseUrl, token, function(slug) {\r",
+                  "        eval(\"(\" + pm.globals.get(\"createComment\") + \")\")(baseUrl, token, slug, function(commentId) {\r",
+                  "            console.log(\"Setup done. Slug:\", slug, \"CommentId:\", commentId);\r",
+                  "        });\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{testSlug}}/comments/{{testCommentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{testSlug}}",
+                "comments",
+                "{{testCommentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post a comment without authorization",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.collectionVariables.get(\"baseUrl\");\r",
+                  "\r",
+                  "eval(\"(\" + pm.globals.get(\"registerUser\") + \")\")(baseUrl, function(token) {\r",
+                  "    eval(\"(\" + pm.globals.get(\"createArticle\") + \")\")(baseUrl, token, function(slug) {\r",
+                  "        console.log(\"Setup done. Slug:\", slug);\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const baseUrl = pm.collectionVariables.get(\"baseUrl\");\r",
+                  "const token   = pm.collectionVariables.get(\"authToken\");\r",
+                  "const slug    = pm.collectionVariables.get(\"testSlug\");\r",
+                  "\r",
+                  "pm.test(\"Status code is 401\", function() {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response indicates unauthorized\", function() {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Unauthorized\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response time is less than 3000ms\", function() {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+                  "});\r",
+                  "\r",
+                  "// Cleanup\r",
+                  "eval(\"(\" + pm.globals.get(\"deleteArticle\") + \")\")(baseUrl, token, slug);\r",
+                  "pm.collectionVariables.set(\"authToken\", \"\");\r",
+                  "pm.collectionVariables.set(\"testSlug\", \"\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"comment\": {\r\n        \"body\": \"Test comment\"\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/articles/{{testSlug}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "{{testSlug}}",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "// All functions are stored in pm.globals so any request can\r",
+          "// call them via: eval('(' + pm.globals.get('registerUser') + ')')\r",
+          "\r",
+          "\r",
+          "// Registers a new random user.\r",
+          "//  Saves to collection variables:\r",
+          "//      authToken   — JWT token of the registered user\r",
+          "//      testEmail   — email used\r",
+          "//      testPassword — password used\r",
+          "//      testUsername — username used\r",
+          "// callback(token, email, username, password)\r",
+          "pm.globals.set('registerUser', function registerUser(baseUrl, callback) {\r",
+          "    var ts       = Date.now();\r",
+          "    var email    = 'test_' + ts + '@test.com';\r",
+          "    var username = 'user_' + ts;\r",
+          "    var password = 'Test1234!';\r",
+          "    pm.sendRequest({\r",
+          "        url: baseUrl + '/users',\r",
+          "        method: 'POST',\r",
+          "        header: { 'Content-Type': 'application/json' },\r",
+          "        body: { mode: 'raw', raw: JSON.stringify({ user: { email, username, password } }) }\r",
+          "    }, function(err, res) {\r",
+          "        if (err || !res.json().user) {\r",
+          "            console.error('registerUser failed:', err || JSON.stringify(res.json()));\r",
+          "            return;\r",
+          "        }\r",
+          "        var token = res.json().user.token;\r",
+          "        pm.collectionVariables.set('authToken', token);\r",
+          "        pm.collectionVariables.set('testEmail', email);\r",
+          "        pm.collectionVariables.set('testPassword', password);\r",
+          "        pm.collectionVariables.set('testUsername', username);\r",
+          "        if (callback) callback(token, email, username, password);\r",
+          "    });\r",
+          "}.toString());\r",
+          "\r",
+          "// registerUser2(callback)\r",
+          "// Registers a second random user.\r",
+          "//  Saves to collection variables:\r",
+          "//      authToken2   — JWT token of the second user\r",
+          "//      testUsername2 — username of the second user\r",
+          "// callback(token2, username2)\r",
+          "pm.globals.set('registerUser2', function registerUser2(baseUrl, callback) {\r",
+          "    var ts        = Date.now() + 1;\r",
+          "    var email2    = 'test2_' + ts + '@test.com';\r",
+          "    var username2 = 'user2_' + ts;\r",
+          "    var password  = 'Test1234!';\r",
+          "    pm.sendRequest({\r",
+          "        url: baseUrl + '/users',\r",
+          "        method: 'POST',\r",
+          "        header: { 'Content-Type': 'application/json' },\r",
+          "        body: { mode: 'raw', raw: JSON.stringify({ user: { email: email2, username: username2, password } }) }\r",
+          "    }, function(err, res) {\r",
+          "        if (err || !res.json().user) {\r",
+          "            console.error('registerUser2 failed:', err || JSON.stringify(res.json()));\r",
+          "            return;\r",
+          "        }\r",
+          "        var token2 = res.json().user.token;\r",
+          "        pm.collectionVariables.set('authToken2', token2);\r",
+          "        pm.collectionVariables.set('testUsername2', username2);\r",
+          "        if (callback) callback(token2, username2);\r",
+          "    });\r",
+          "}.toString());\r",
+          "\r",
+          "// createArticle(baseUrl, token, callback)\r",
+          "// Creates a test article for the given token.\r",
+          "//  Saves to collection variables:\r",
+          "//      testSlug — slug of the created article\r",
+          "//      testTag  — first tag of the article\r",
+          "// callback(slug)\r",
+          "pm.globals.set('createArticle', function createArticle(baseUrl, token, callback) {\r",
+          "    var tag = 'tag_' + Date.now();\r",
+          "    pm.sendRequest({\r",
+          "        url: baseUrl + '/articles',\r",
+          "        method: 'POST',\r",
+          "        header: { 'Content-Type': 'application/json', 'Authorization': 'Token ' + token },\r",
+          "        body: {\r",
+          "            mode: 'raw',\r",
+          "            raw: JSON.stringify({\r",
+          "                article: {\r",
+          "                    title: 'Test Article ' + Date.now(),\r",
+          "                    description: 'Test description',\r",
+          "                    body: 'Test body',\r",
+          "                    tagList: [tag]\r",
+          "                }\r",
+          "            })\r",
+          "        }\r",
+          "    }, function(err, res) {\r",
+          "        if (err || !res.json().article) {\r",
+          "            console.error('createArticle failed:', err || JSON.stringify(res.json()));\r",
+          "            return;\r",
+          "        }\r",
+          "        var slug = res.json().article.slug;\r",
+          "        pm.collectionVariables.set('testSlug', slug);\r",
+          "        pm.collectionVariables.set('testTag', tag);\r",
+          "        if (callback) callback(slug);\r",
+          "    });\r",
+          "}.toString());\r",
+          "\r",
+          "// createComment(baseUrl, token, slug, callback)\r",
+          "// Creates a test comment on the given article slug.\r",
+          "//  Saves to collection variables:\r",
+          "//      testCommentId — id of the created comment\r",
+          "// callback(commentId)\r",
+          "pm.globals.set('createComment', function createComment(baseUrl, token, slug, callback) {\r",
+          "    pm.sendRequest({\r",
+          "        url: baseUrl + '/articles/' + slug + '/comments',\r",
+          "        method: 'POST',\r",
+          "        header: { 'Content-Type': 'application/json', 'Authorization': 'Token ' + token },\r",
+          "        body: { mode: 'raw', raw: JSON.stringify({ comment: { body: 'Test comment ' + Date.now() } }) }\r",
+          "    }, function(err, res) {\r",
+          "        if (err || !res.json().comment) {\r",
+          "            console.error('createComment failed:', err || JSON.stringify(res.json()));\r",
+          "            return;\r",
+          "        }\r",
+          "        var commentId = res.json().comment.id;\r",
+          "        pm.collectionVariables.set('testCommentId', commentId);\r",
+          "        if (callback) callback(commentId);\r",
+          "    });\r",
+          "}.toString());\r",
+          "\r",
+          "// deleteArticle(baseUrl, token, slug)\r",
+          "// Deletes an article by slug. Used in Tests tab to clean up.\r",
+          "// No callback\r",
+          "pm.globals.set('deleteArticle', function deleteArticle(baseUrl, token, slug) {\r",
+          "    pm.sendRequest({\r",
+          "        url: baseUrl + '/articles/' + slug,\r",
+          "        method: 'DELETE',\r",
+          "        header: { 'Authorization': 'Token ' + token }\r",
+          "    }, function(err, res) {\r",
+          "        if (err) console.error('deleteArticle failed:', err);\r",
+          "        else console.log('Article deleted, slug:', slug, 'status:', res.code);\r",
+          "    });\r",
+          "}.toString());\r",
+          "\r",
+          "// followUser(baseUrl, token, username, callback)\r",
+          "// Follows a user. Used as precondition for 'Unfollow' test.\r",
+          "// callback()\r",
+          "pm.globals.set('followUser', function followUser(baseUrl, token, username, callback) {\r",
+          "    pm.sendRequest({\r",
+          "        url: baseUrl + '/profiles/' + username + '/follow',\r",
+          "        method: 'POST',\r",
+          "        header: { 'Authorization': 'Token ' + token, 'Content-Type': 'application/json' }\r",
+          "    }, function(err, res) {\r",
+          "        if (err) console.error('followUser failed:', err);\r",
+          "        if (callback) callback();\r",
+          "    });\r",
+          "}.toString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://conduit.mate.academy/api"
+    },
+    {
+      "key": "userEmail",
+      "value": "testuser_1776350930550@test.com"
+    },
+    {
+      "key": "userPassword",
+      "value": "Test1234!"
+    },
+    {
+      "key": "username",
+      "value": "testuser_1776350930550"
+    },
+    {
+      "key": "user2Email",
+      "value": "testuser2_1776350930550@test.com"
+    },
+    {
+      "key": "token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTE1MTEyNSwidXNlcm5hbWUiOiJ0ZXN0dXNlcl8xNzc2MzUwOTMwNTUwIiwiZXhwIjoxNzgxNTM0OTMxLCJpYXQiOjE3NzYzNTA5MzF9.kLRAqYVRMXktJb0K0zK8s0s96jAdAwYKVyjHxJBQ1rc"
+    },
+    {
+      "key": "token2",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTE1MTEyNiwidXNlcm5hbWUiOiJ0ZXN0dXNlcjJfMTc3NjM1MDkzMDU1MCIsImV4cCI6MTc4MTUzNDkzMSwiaWF0IjoxNzc2MzUwOTMxfQ.X5u2vDYG_ZMn-MkKXBeTVmFNGaUDGNGTUEy13SdT9eM"
+    },
+    {
+      "key": "slug",
+      "value": "test-article-dternovyk-1776350969-4ijadp"
+    },
+    {
+      "key": "authToken",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTE1MTEzMCwidXNlcm5hbWUiOiJ1c2VyXzE3NzYzNTExMjY5MzMiLCJleHAiOjE3ODE1MzUxMjcsImlhdCI6MTc3NjM1MTEyN30.FtLd4kXYu_rUSS9Ndw88qDxdsCW2AKRr_VT1q1nPf9s"
+    },
+    {
+      "key": "testEmail",
+      "value": "test_1776351126933@test.com"
+    },
+    {
+      "key": "testPassword",
+      "value": "Test1234!"
+    },
+    {
+      "key": "testUsername",
+      "value": "user_1776351126933"
+    },
+    {
+      "key": "testSlug",
+      "value": "test-article-dternovyk-1776351127-vpsoo5"
+    },
+    {
+      "key": "testCommentId",
+      "value": ""
+    },
+    {
+      "key": "testTag",
+      "value": ""
+    },
+    {
+      "key": "authToken2",
+      "value": ""
+    },
+    {
+      "key": "testUsername2",
+      "value": ""
+    },
+    {
+      "key": "emailWihtoutA",
+      "value": ""
+    },
+    {
+      "key": "emailWihtoutDot",
+      "value": ""
+    },
+    {
+      "key": "email254",
+      "value": ""
+    },
+    {
+      "key": "emailForLogin",
+      "value": ""
+    },
+    {
+      "key": "newPassword",
+      "value": ""
+    },
+    {
+      "key": "updatedEmail",
+      "value": ""
+    }
+  ]
+}
